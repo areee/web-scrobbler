@@ -8,6 +8,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const TerserJSPlugin = require('terser-webpack-plugin');
+const VueLoaderPlugin = require('vue-loader/lib/plugin');
 const WriteFilePlugin = require('write-file-webpack-plugin');
 
 const {
@@ -128,6 +129,14 @@ module.exports = (browserArg) => {
 						options: preprocessorFlags,
 					},
 				},
+				{
+					test: /\.svg$/,
+					loader: 'svg-sprite-loader',
+				},
+				{
+					test: /\.vue$/,
+					loader: 'vue-loader',
+				},
 			],
 		},
 		optimization: createOptimization(),
@@ -142,6 +151,7 @@ module.exports = (browserArg) => {
 		resolve: {
 			alias: {
 				connectors: resolve(srcDir, 'core', 'connectors'),
+				'@': resolve(srcDir),
 			},
 			modules: [
 				resolve(srcDir, 'core', 'background'),
@@ -413,6 +423,7 @@ function createPlugins(browser) {
 	];
 
 	return [
+		new VueLoaderPlugin(),
 		new MiniCssExtractPlugin({
 			chunkFilename: `${chunkDir}/[name].css`,
 			filename: '[name].css',
